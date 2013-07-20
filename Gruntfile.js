@@ -1,5 +1,8 @@
 module.exports = function( grunt ) {
   'use strict';
+
+  require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
+
   //
   // Grunt configuration:
   //
@@ -21,13 +24,21 @@ module.exports = function( grunt ) {
       dir: 'app/components'
     },
 
+    clean: [
+      "dist"
+    ],
+
     // Coffee to JS compilation
     coffee: {
-      compile: {
-        files: {
-          'app/scripts/*.js': 'app/scripts/**/*.coffee',
-          'test/spec/*.js': 'test/spec/**/*.coffee'
-        }
+      dev: {
+        options: {
+          bare: true
+        },
+        expand: true,
+        cwd: "app/coffee",
+        src: ["**/*.coffee"],
+        dest: "app/js",
+        ext: ".js"
       }
     },
 
@@ -45,6 +56,24 @@ module.exports = function( grunt ) {
       }
     },
 
+    sass: {                                 // Task
+      dist: {                             // Target
+        files: {                        // Dictionary of files
+          'main.css': 'main.scss'     // 'destination': 'source'
+        }
+      },
+      dev: {                              // Another target
+        options: {                      // Dictionary of render options
+          includePaths: [
+            'path/to/imports/'
+          ]
+        },
+        files: {
+          'main.css': 'main.scss'
+        }
+      }
+    },
+
     // generate application cache manifest
     manifest:{
       dest: ''
@@ -52,10 +81,15 @@ module.exports = function( grunt ) {
 
     // default watch configuration
     watch: {
+      index: {
+        files: ["app/index.html"],
+        tasks: ["timestamp"]
+      },
+
       concat: {
         files: 'app/scripts/**/*.js',
         tasks: 'concat reload'
-      },      
+      },
       coffee: {
         files: 'app/scripts/**/*.coffee',
         tasks: 'coffee reload'
@@ -75,6 +109,14 @@ module.exports = function( grunt ) {
           'app/images/**/*'
         ],
         tasks: 'reload'
+      }
+    },
+
+    changelog: {
+      options: {
+        dest: "CHANGELOG.md",
+        templateFile: "lib/changelog.tpl.md",
+        github:"https://github.com/infowrap/angular-isotope.git"
       }
     },
 
@@ -176,10 +218,28 @@ module.exports = function( grunt ) {
     }
   });
 
+  grunt.registerTask("preview", "Development build", function() {
+    grunt.log.writeln("Development build");
+    grunt.task.run("dev");
+  });
+
+  grunt.registerTask("dev", ["clean", "coffee:dev", "concat:angiso", "server", "watch:index"]);
+
+  grunt.registerTask("server", "custom preview server using express", function() {
+    grunt.log.writeln("Express server listening on port 8000");
+    require("./app-server.js").listen(8000);
+    require("child_process").exec("open \"http://localhost:8000\"");
+  });
+
+  // Print a timestamp (useful for when watching)
+  grunt.registerTask("timestamp", function() {
+    grunt.log.subhead(Date());
+  });
+
   // Alias the `test` task to run `testacular` instead
-  grunt.registerTask('test', 'run the testacular test driver', function () {
+  grunt.registerTask('test', 'run the karma test driver', function () {
     var done = this.async();
-    require('child_process').exec('testacular start --single-run', function (err, stdout) {
+    require('child_process').exec('karma start --single-run', function (err, stdout) {
       grunt.log.write(stdout);
       done(err);
     });

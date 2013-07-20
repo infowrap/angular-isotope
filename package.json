@@ -13,11 +13,21 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "testacular": ">= 0.4.0",
-    "grunt": ">= 0.3.17"
+    "ejs": "*",
+    "express": "3.0.0",
+    "grunt": ">= 0.3.17",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-coffee": "~0.6.0",
+    "grunt-contrib-copy": "~0.4.0",
+    "grunt-contrib-concat": "~0.1.3",
+    "grunt-contrib-uglify": "~0.1.1",
+    "grunt-contrib-watch": "~0.4.3",
+    "grunt-conventional-changelog": "~0.1.1",
+    "karma": "~0.8.4",
+    "matchdep": "~0.1.2"
   },
   "scripts": {
-    "test": "testacular start test/testacular.conf.js --single-run --browsers PhantomJS",
-    "test-server": "testacular start test/testacular.conf.js --browsers PhantomJS"
+    "test": "karma start test/karma.conf.js --single-run --browsers PhantomJS",
+    "test-server": "karma start test/karma.conf.js --browsers PhantomJS"
   }
 }
