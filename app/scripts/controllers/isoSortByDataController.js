@@ -1,4 +1,4 @@
-var isoSortByDataController = function($scope, optionsStore) {
+angular.module('iso.controllers').controller('isoSortByDataController', ['iso.config', '$scope', 'optionsStore', function(config, $scope, optionsStore) {
 
   $scope.getHash = function(s) {
       return 'opt'+ s; // TODO: Replace non-key chars '.', '#', '[',']'
@@ -79,7 +79,7 @@ var isoSortByDataController = function($scope, optionsStore) {
       , item = $elem.find(selector)
       , text = getText($elem, item, selector)
       , val = toType(text, type);
-      
+
       return evaluate ? evaluate(val) : val;
     };
 };

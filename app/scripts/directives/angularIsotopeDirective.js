@@ -1,6 +1,6 @@
 angular.module('iso.directives')
 
-.directive('isotopeContainer', ['$injector', function($injector) {
+.directive('isotopeContainer', ['$injector', '$parse', function($injector, $parse) {
 	'use strict';
 	var options = {};
 	return {
@@ -13,9 +13,9 @@ angular.module('iso.directives')
 
 			// If ui-options are passed, merge them onto global defaults.
 			if (isoOptions) {
-					linkOptions = scope.$eval('[' + isoOptions + ']');
-					if (angular.isObject(linkOptions[0])) {
-						scope.updateOptions(linkOptions[0]);
+					linkOptions = $parse(isoOptions)(scope);
+					if (angular.isObject(linkOptions)) {
+						scope.updateOptions(linkOptions);
 					}
 			}
 
@@ -24,7 +24,10 @@ angular.module('iso.directives')
 			isoInit['isoMethodEvent'] = attrs.isoMethodSubscribe;
 			isoInit['isoMode'] = attrs.isoMode;
 
-			scope.init(isoInit);
+			if(attrs.isoIgnore !== 'true'){
+			  // allow some container iso's to be ignored
+			  scope.init(isoInit);
+			}
 			return element;
 		}
 	};
@@ -32,20 +35,23 @@ angular.module('iso.directives')
 
 angular.module('iso.directives')
 
-.directive('isotopeItem', ['$timeout', function($timeout) {
+.directive('isotopeItem', ['iso.config', '$timeout', function(config, $timeout) {
 	return {
 		restrict: 'A',
 
 		link: function(scope,element,attrs) {
 			var $element = $(element);
 
+			// handles cases where the isotopeItem is inside an isolate scope
+			var correctScope = _.has(scope, '$root') ? scope.$parent : scope;
 			//$element.addClass(scope.isotopeOptions.itemClass);
-			scope.setIsoElement($element);
+			correctScope.setIsoElement($element);
 
 			// Refresh after last element.
-			if (attrs.ngRepeat && true === scope.$last && "addItems" == scope.isoMode) {
+			if (attrs.ngRepeat && true === correctScope.$last && "addItems" == correctScope.isoMode) {
 				element.ready(function () {
-					$timeout(function() {scope.refreshIso()});
+					// mobile is just a bit slower, allow module configuration to provide a reasonable delay based on platform
+					$timeout(function() {correctScope.refreshIso()}, config.refreshDelay || 0);
 				});
 			}
 			return element;

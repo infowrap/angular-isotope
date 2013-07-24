@@ -1,6 +1,6 @@
 angular.module('iso.directives')
 
-.directive('isoSortbyData', function(optionsStore) {
+.directive('isoSortbyData', ['optionsStore', function(optionsStore) {
   return {
     restrict: 'A'
     , controller: isoSortByDataController
@@ -23,5 +23,5 @@ angular.module('iso.directives')
         scope.storeMethods(methods);
       }
     };
-  });
+  }]);
 

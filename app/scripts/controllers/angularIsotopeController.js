@@ -1,4 +1,4 @@
-var angularIsotopeController = function($scope, $timeout, optionsStore) {
+angular.module('iso.controllers').controller('angularIsotopeController', ['iso.config', '$scope', '$timeout', 'optionsStore', function(config, $scope, $timeout, optionsStore) {
 	'use strict';
 
 	var onLayoutEvent = "isotope.onLayout"
@@ -84,6 +84,10 @@ var angularIsotopeController = function($scope, $timeout, optionsStore) {
 	$scope.refresh = function() {
 		isotopeContainer.isotope();
 	};
+
+	$scope.$on(config.refreshEvent, function(){
+	  $scope.refreshIso();
+	});
 
 };
 

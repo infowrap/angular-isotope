@@ -1,7 +1,7 @@
-angular.module('iso.services', [], function($provide) {
-  $provide.factory('optionsStore', function() {
+angular.module('iso.services', ['iso.config'], function($provide) {
+  $provide.factory('optionsStore', ['iso.config', function(config) {
     'use strict';
-    var storedOptions = {};
+    var storedOptions = config.defaultOptions || {};
 
     return {
       store: function(option) {
@@ -11,5 +11,5 @@ angular.module('iso.services', [], function($provide) {
         return storedOptions;
       }
     };
-  });
+  }]);
 });
