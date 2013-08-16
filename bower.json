@@ -4,9 +4,15 @@
   "main": "infowrap-angular-isotope",
   "ignore": [
     "**/.*",
+    "app",
+    "lib",
     "node_modules",
+    "scripts",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "app-server.js",
+    "Gruntfile.js",
+    "karma.conf.js"
   ]
 }
