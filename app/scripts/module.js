@@ -1,5 +1,1 @@
-angular.module('iso.config', []).value('iso.config', {});
-angular.module('iso.filters', ['iso.config']);
-angular.module('iso.controllers', ['iso.config', 'iso.services']);
-angular.module('iso.directives', ['iso.config', 'iso.services', 'iso.controllers']);
-angular.module('iso', ['iso.filters', 'iso.services', 'iso.directives', 'iso.config']);
+angular.module('iso', ['iso.config', 'iso.filters', 'iso.services', 'iso.controllers', 'iso.directives']);

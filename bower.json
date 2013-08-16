@@ -1,0 +1,12 @@
+{
+  "name": "infowrap-angular-isotope",
+  "version": "0.0.0",
+  "main": "infowrap-angular-isotope",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

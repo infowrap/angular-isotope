@@ -13,9 +13,13 @@ module.exports = function( grunt ) {
     // Project configuration
     // ---------------------
     concat: {
-      angiso: {
-        src: ['app/scripts/module.js', 'app/scripts/controllers/*.js', 'app/scripts/directives/*.js', 'app/scripts/services/*.js'],
-        dest: 'app/scripts/vendor/angular-isotope.js'
+      dev: {
+        src: ['app/scripts/config.js', 'app/scripts/services/*.js', 'app/scripts/controllers/*.js', 'app/scripts/directives/*.js', 'app/scripts/module.js'],
+        dest: 'app/scripts/vendor/infowrap-angular-isotope.js'
+      },
+      dist: {
+        src: ['app/scripts/config.js', 'app/scripts/services/*.js', 'app/scripts/controllers/*.js', 'app/scripts/directives/*.js', 'app/scripts/module.js'],
+        dest: 'dist/infowrap-angular-isotope.js'
       }
     },
 
@@ -37,7 +41,7 @@ module.exports = function( grunt ) {
         expand: true,
         cwd: "app/coffee",
         src: ["**/*.coffee"],
-        dest: "app/js",
+        dest: "app/scripts",
         ext: ".js"
       }
     },
@@ -223,7 +227,9 @@ module.exports = function( grunt ) {
     grunt.task.run("dev");
   });
 
-  grunt.registerTask("dev", ["clean", "coffee:dev", "concat:angiso", "server", "watch:index"]);
+  grunt.registerTask("dev", ["clean", "coffee:dev", "concat:dev", "server", "watch:index"]);
+
+  grunt.registerTask("release", ["clean", "coffee:dev", "concat:dist"]);
 
   grunt.registerTask("server", "custom preview server using express", function() {
     grunt.log.writeln("Express server listening on port 8000");

@@ -1,13 +1,14 @@
-var isotopeApp = angular.module('isotopeApp', ['iso.directives']);
+var isotopeApp;
 
-isotopeApp.config(['$routeProvider', function($routeProvider) {
-  'use strict';
+isotopeApp = angular.module("isotopeApp", ["iso.directives"]);
 
-  $routeProvider
-    .when('/', {
-      templateUrl: 'views/main.html'
-    })
-    .otherwise({
-      redirectTo: '/'
+isotopeApp.config([
+  "$routeProvider", function($routeProvider) {
+    "use strict";
+    return $routeProvider.when("/", {
+      templateUrl: "views/main.html"
+    }).otherwise({
+      redirectTo: "/"
     });
-}]);
+  }
+]);
