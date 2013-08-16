@@ -1,12 +1,12 @@
 {
   "author": "Mark Allen Hall",
-  "name": "angular-isotope",
-  "description": "AngularIsotope - Isotope directives for AngularJS",
-  "version": "0.0.1",
+  "name": "infowrap-angular-isotope",
+  "description": "Infowrap AngularIsotope - Isotope directives for AngularJS. Fork of Mark Allen Hall's excellent angular-isotope wrapper.",
+  "version": "0.1.0",
   "homepage": "http://mankindsoftware.github.com/angular-isotope",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mankindsoftware/angular-isotope.git"
+    "url": "git://github.com/infowrap/angular-isotope.git"
   },
   "engines": {
     "node": "0.8.x"

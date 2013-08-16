@@ -1,12 +1,18 @@
 {
   "name": "infowrap-angular-isotope",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "infowrap-angular-isotope",
   "ignore": [
     "**/.*",
+    "app",
+    "lib",
     "node_modules",
+    "scripts",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "app-server.js",
+    "Gruntfile.js",
+    "karma.conf.js"
   ]
 }
