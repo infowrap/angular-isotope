@@ -2,7 +2,7 @@
   "author": "Mark Allen Hall",
   "name": "infowrap-angular-isotope",
   "description": "Infowrap AngularIsotope - Isotope directives for AngularJS. Fork of Mark Allen Hall's excellent angular-isotope wrapper.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "homepage": "http://mankindsoftware.github.com/angular-isotope",
   "repository": {
     "type": "git",
