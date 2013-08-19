@@ -1,3 +1,5 @@
+angular.module("iso.directives", ["iso.config", "iso.services"]);
+
 angular.module("iso.directives").directive("isotopeContainer", [
   "$injector", "$parse", function($injector, $parse) {
     "use strict";
