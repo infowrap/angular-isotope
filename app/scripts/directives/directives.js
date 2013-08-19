@@ -6,7 +6,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
     var options;
     options = {};
     return {
-      controller: angularIsotopeController,
+      controller: "angularIsotopeController",
       link: function(scope, element, attrs) {
         var isoInit, isoOptions, linkOptions;
         linkOptions = [];
@@ -53,7 +53,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
   "optionsStore", function(optionsStore) {
     return {
       restrict: "A",
-      controller: isoSortByDataController,
+      controller: "isoSortByDataController",
       replace: true,
       link: function(scope, element, attrs) {
         var methSet, methods, optEvent, optKey, optionSet, options;
