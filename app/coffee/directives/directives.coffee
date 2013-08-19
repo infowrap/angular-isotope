@@ -2,7 +2,7 @@ angular.module("iso.directives", ["iso.config", "iso.services"])
 angular.module("iso.directives").directive("isotopeContainer", ["$injector", "$parse", ($injector, $parse) ->
   "use strict"
   options = {}
-  controller: angularIsotopeController
+  controller: "angularIsotopeController"
   link: (scope, element, attrs) ->
     linkOptions = []
     isoOptions = attrs.isoOptions
@@ -43,7 +43,7 @@ angular.module("iso.directives").directive("isotopeContainer", ["$injector", "$p
     element
 ]).directive("isoSortbyData", ["optionsStore", (optionsStore) ->
   restrict: "A"
-  controller: isoSortByDataController
+  controller: "isoSortByDataController"
   replace: true
   link: (scope, element, attrs) ->
     optionSet = $(element)
