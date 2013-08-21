@@ -1,4 +1,4 @@
-angular.module("iso.services", ["iso.config"], ($provide) ->
+angular.module("iso.services", ["iso.config"], ['$provide', ($provide) ->
   $provide.factory("optionsStore", ["iso.config", (config) ->
     "use strict"
     storedOptions = config.defaultOptions or {}
@@ -8,4 +8,4 @@ angular.module("iso.services", ["iso.config"], ($provide) ->
     retrieve: ->
       storedOptions
   ])
-)
+])

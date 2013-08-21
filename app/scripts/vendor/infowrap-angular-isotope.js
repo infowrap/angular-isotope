@@ -2,23 +2,25 @@ angular.module('iso.config', []).value('iso.config', {});
 
 angular.module('iso.filters', ['iso.config']);
 
-angular.module("iso.services", ["iso.config"], function($provide) {
-  return $provide.factory("optionsStore", [
-    "iso.config", function(config) {
-      "use strict";
-      var storedOptions;
-      storedOptions = config.defaultOptions || {};
-      return {
-        store: function(option) {
-          return storedOptions = $.extend.apply(null, [true, storedOptions].concat(option));
-        },
-        retrieve: function() {
-          return storedOptions;
-        }
-      };
-    }
-  ]);
-});
+angular.module("iso.services", ["iso.config"], [
+  '$provide', function($provide) {
+    return $provide.factory("optionsStore", [
+      "iso.config", function(config) {
+        "use strict";
+        var storedOptions;
+        storedOptions = config.defaultOptions || {};
+        return {
+          store: function(option) {
+            return storedOptions = $.extend.apply(null, [true, storedOptions].concat(option));
+          },
+          retrieve: function() {
+            return storedOptions;
+          }
+        };
+      }
+    ]);
+  }
+]);
 
 angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("angularIsotopeController", [
   "iso.config", "$scope", "$timeout", "optionsStore", function(config, $scope, $timeout, optionsStore) {
@@ -198,13 +200,15 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
   }
 ]);
 
+angular.module("iso.directives", ["iso.config", "iso.services", "iso.controllers"]);
+
 angular.module("iso.directives").directive("isotopeContainer", [
   "$injector", "$parse", function($injector, $parse) {
     "use strict";
     var options;
     options = {};
     return {
-      controller: angularIsotopeController,
+      controller: "angularIsotopeController",
       link: function(scope, element, attrs) {
         var isoInit, isoOptions, linkOptions;
         linkOptions = [];
@@ -251,7 +255,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
   "optionsStore", function(optionsStore) {
     return {
       restrict: "A",
-      controller: isoSortByDataController,
+      controller: "isoSortByDataController",
       replace: true,
       link: function(scope, element, attrs) {
         var methSet, methods, optEvent, optKey, optionSet, options;
