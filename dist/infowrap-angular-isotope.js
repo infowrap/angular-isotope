@@ -2,23 +2,25 @@ angular.module('iso.config', []).value('iso.config', {});
 
 angular.module('iso.filters', ['iso.config']);
 
-angular.module("iso.services", ["iso.config"], function($provide) {
-  return $provide.factory("optionsStore", [
-    "iso.config", function(config) {
-      "use strict";
-      var storedOptions;
-      storedOptions = config.defaultOptions || {};
-      return {
-        store: function(option) {
-          return storedOptions = $.extend.apply(null, [true, storedOptions].concat(option));
-        },
-        retrieve: function() {
-          return storedOptions;
-        }
-      };
-    }
-  ]);
-});
+angular.module("iso.services", ["iso.config"], [
+  '$provide', function($provide) {
+    return $provide.factory("optionsStore", [
+      "iso.config", function(config) {
+        "use strict";
+        var storedOptions;
+        storedOptions = config.defaultOptions || {};
+        return {
+          store: function(option) {
+            return storedOptions = $.extend.apply(null, [true, storedOptions].concat(option));
+          },
+          retrieve: function() {
+            return storedOptions;
+          }
+        };
+      }
+    ]);
+  }
+]);
 
 angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("angularIsotopeController", [
   "iso.config", "$scope", "$timeout", "optionsStore", function(config, $scope, $timeout, optionsStore) {

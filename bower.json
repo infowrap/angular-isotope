@@ -1,7 +1,7 @@
 {
   "name": "infowrap-angular-isotope",
   "version": "0.1.4",
-  "main": "infowrap-angular-isotope",
+  "main": "dist/infowrap-angular-isotope",
   "ignore": [
     "**/.*",
     "app",
