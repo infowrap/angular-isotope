@@ -12,7 +12,6 @@ angular.module("iso.directives").directive("isotopeContainer", ["$injector", "$p
     if isoOptions
       linkOptions = $parse(isoOptions)(scope)
       scope.isoOptions = linkOptions  if angular.isObject(linkOptions)
-    isoInit["isoId"] = attrs.id
     isoInit["element"] = element
     isoInit["isoOptionsEvent"] = attrs.isoOptionsSubscribe
     isoInit["isoMethodEvent"] = attrs.isoMethodSubscribe
