@@ -6,6 +6,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
   isotopeContainer = null
   buffer = []
   scope = ""
+  isoId = undefined
   isoMode = ""
   $scope.$on onLayoutEvent, (event) ->
 
@@ -24,13 +25,14 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
     return isoOptions
 
   $scope.init = (isoInit) ->
+    isoId = isoInit.id
     isotopeContainer = isoInit.element
     initEventHandler $scope.$on, isoInit.isoOptionsEvent, optionsHandler
     initEventHandler $scope.$on, isoInit.isoMethodEvent, methodHandler
     $scope.isoMode = isoInit.isoMode or "addItems"
     $timeout ->
-      isotopeContainer.isotope(getIsoOptions())
       postInitialized = true
+      isotopeContainer.isotope(getIsoOptions())
 
 
   $scope.setIsoElement = ($element) ->
@@ -39,8 +41,14 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
         isotopeContainer.isotope $scope.isoMode, $element
 
 
-  $scope.refreshIso = ->
-    isotopeContainer.isotope(getIsoOptions()) if postInitialized
+  $scope.refreshIso = (id) ->
+    if postInitialized
+      if id is undefined
+        # refresh for all
+        isotopeContainer.isotope(getIsoOptions())
+      else if isoId is id
+        # refresh for specific container only
+        isotopeContainer.isotope(getIsoOptions())
 
   $scope.updateOptions = (option) ->
     if isotopeContainer
@@ -69,8 +77,8 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
     if isotopeContainer and postInitialized
       isotopeContainer.isotope('destroy')
 
-  $scope.$on config.refreshEvent, ->
-    $scope.refreshIso()
+  $scope.$on config.refreshEvent, (e, id) ->
+    $scope.refreshIso(id)
 
 ]).controller("isoSortByDataController", ["iso.config", "$scope", "optionsStore", (config, $scope, optionsStore) ->
   $scope.getHash = (s) ->

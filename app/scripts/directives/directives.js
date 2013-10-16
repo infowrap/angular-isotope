@@ -18,6 +18,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
             scope.isoOptions = linkOptions;
           }
         }
+        isoInit["isoId"] = attrs.id;
         isoInit["element"] = element;
         isoInit["isoOptionsEvent"] = attrs.isoOptionsSubscribe;
         isoInit["isoMethodEvent"] = attrs.isoMethodSubscribe;
