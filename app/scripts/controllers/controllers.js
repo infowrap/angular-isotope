@@ -31,7 +31,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
       return isoOptions;
     };
     $scope.init = function(isoInit) {
-      isoId = isoInit.id;
+      isoId = isoInit.isoId;
       isotopeContainer = isoInit.element;
       initEventHandler($scope.$on, isoInit.isoOptionsEvent, optionsHandler);
       initEventHandler($scope.$on, isoInit.isoMethodEvent, methodHandler);
