@@ -75,7 +75,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
     };
     $scope.$on('$destroy', function() {
       if (isotopeContainer && postInitialized) {
-        return isotopeContainer.destroy();
+        return isotopeContainer.isotope('destroy');
       }
     });
     return $scope.$on(config.refreshEvent, function() {

@@ -67,7 +67,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
 
   $scope.$on '$destroy', ->
     if isotopeContainer and postInitialized
-      isotopeContainer.destroy()
+      isotopeContainer.isotope('destroy')
 
   $scope.$on config.refreshEvent, ->
     $scope.refreshIso()
