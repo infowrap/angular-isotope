@@ -25,7 +25,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
     return isoOptions
 
   $scope.init = (isoInit) ->
-    isoId = isoInit.id
+    isoId = isoInit.isoId
     isotopeContainer = isoInit.element
     initEventHandler $scope.$on, isoInit.isoOptionsEvent, optionsHandler
     initEventHandler $scope.$on, isoInit.isoMethodEvent, methodHandler
