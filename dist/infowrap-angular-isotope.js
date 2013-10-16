@@ -25,7 +25,7 @@ angular.module("iso.services", ["iso.config"], [
 angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("angularIsotopeController", [
   "iso.config", "$scope", "$timeout", "optionsStore", function(config, $scope, $timeout, optionsStore) {
     "use strict";
-    var buffer, initEventHandler, isoMode, isotopeContainer, methodHandler, onLayoutEvent, optionsHandler, postInitialized, scope;
+    var buffer, getIsoOptions, initEventHandler, isoMode, isotopeContainer, methodHandler, onLayoutEvent, optionsHandler, postInitialized, scope;
     onLayoutEvent = "isotope.onLayout";
     postInitialized = false;
     isotopeContainer = null;
@@ -40,13 +40,18 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
         });
       });
     };
-    optionsStore.store({
-      onLayout: $scope.layoutEventEmit
-    });
     initEventHandler = function(fun, evt, hnd) {
       if (evt) {
         return fun.call($scope, evt, hnd);
       }
+    };
+    getIsoOptions = function() {
+      var isoOptions;
+      isoOptions = $scope.isoOptions || optionsStore.retrieve();
+      $.extend(isoOptions, {
+        onLayout: $scope.layoutEventEmit
+      });
+      return isoOptions;
     };
     $scope.init = function(isoInit) {
       isotopeContainer = isoInit.element;
@@ -54,7 +59,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
       initEventHandler($scope.$on, isoInit.isoMethodEvent, methodHandler);
       $scope.isoMode = isoInit.isoMode || "addItems";
       return $timeout(function() {
-        isotopeContainer.isotope(optionsStore.retrieve());
+        isotopeContainer.isotope(getIsoOptions());
         return postInitialized = true;
       });
     };
@@ -67,12 +72,15 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
     };
     $scope.refreshIso = function() {
       if (postInitialized) {
-        return isotopeContainer.isotope();
+        return isotopeContainer.isotope(getIsoOptions());
       }
     };
     $scope.updateOptions = function(option) {
+      var isoOptions;
       if (isotopeContainer) {
-        return isotopeContainer.isotope(option);
+        isoOptions = getIsoOptions();
+        $.extend(isoOptions, option);
+        return isotopeContainer.isotope(isoOptions);
       } else {
         return optionsStore.store(option);
       }
@@ -86,14 +94,14 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
       params = option.params;
       return fun.apply($scope, params);
     };
-    initEventHandler($scope.$on, "iso-opts", optionsHandler);
-    initEventHandler($scope.$on, "iso-method", methodHandler);
     $scope.removeAll = function(cb) {
       return isotopeContainer.isotope("remove", isotopeContainer.data("isotope").$allAtoms, cb);
     };
-    $scope.refresh = function() {
-      return isotopeContainer.isotope();
-    };
+    $scope.$on('$destroy', function() {
+      if (isotopeContainer && postInitialized) {
+        return isotopeContainer.destroy();
+      }
+    });
     return $scope.$on(config.refreshEvent, function() {
       return $scope.refreshIso();
     });
@@ -217,7 +225,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
         if (isoOptions) {
           linkOptions = $parse(isoOptions)(scope);
           if (angular.isObject(linkOptions)) {
-            scope.updateOptions(linkOptions);
+            scope.isoOptions = linkOptions;
           }
         }
         isoInit["element"] = element;
@@ -238,7 +246,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
       link: function(scope, element, attrs) {
         var $element, correctScope;
         $element = $(element);
-        correctScope = (_.has(scope, "$root") ? scope.$parent : scope);
+        correctScope = (scope.hasOwnProperty("$root") ? scope.$parent : scope);
         correctScope.setIsoElement($element);
         if (attrs.ngRepeat && true === correctScope.$last && "addItems" === correctScope.isoMode) {
           element.ready(function() {
@@ -260,14 +268,14 @@ angular.module("iso.directives").directive("isotopeContainer", [
       link: function(scope, element, attrs) {
         var methSet, methods, optEvent, optKey, optionSet, options;
         optionSet = $(element);
-        optKey = optionSet.attr("ok-key");
+        optKey = optionSet.attr("data-ok-key");
         optEvent = "iso-opts";
         options = {};
-        methSet = optionSet.children().find("[ok-sel]");
+        methSet = optionSet.children().find("[data-ok-sel]");
         methSet.each(function(index) {
           var $this;
           $this = $(this);
-          return $this.attr("ok-sortby-key", scope.getHash($this.attr("ok-sel")));
+          return $this.attr("data-ok-sortby-key", scope.getHash($this.attr("data-ok-sel")));
         });
         methods = scope.createSortByDataMethods(methSet);
         return scope.storeMethods(methods);
@@ -282,16 +290,16 @@ angular.module("iso.directives").directive("isotopeContainer", [
       var createOptions, doOption, emitOption, optKey, optPublish, optionSet, preSelectOptions, selected;
       optionSet = $(element);
       optPublish = attrs.optPublish || "opt-kind";
-      optKey = optionSet.attr("ok-key");
+      optKey = optionSet.attr("data-ok-key");
       selected = optionSet.find(".selected");
       preSelectOptions = {};
       createOptions = function(item) {
         var ascAttr, key, option, virtualSortByKey;
         if (item) {
           option = {};
-          virtualSortByKey = item.attr("ok-sortby-key");
-          ascAttr = item.attr("opt-ascending");
-          key = virtualSortByKey || item.attr("ok-sel");
+          virtualSortByKey = item.attr("data-ok-sortby-key");
+          ascAttr = item.attr("data-opt-ascending");
+          key = virtualSortByKey || item.attr("data-ok-sel");
           if (virtualSortByKey) {
             option["sortAscending"] = (ascAttr ? ascAttr === "true" : true);
           }
@@ -313,7 +321,9 @@ angular.module("iso.directives").directive("isotopeContainer", [
         }
         optionSet.find(".selected").removeClass("selected");
         selItem.addClass("selected");
-        emitOption(createOptions(selItem));
+        scope.$apply(function() {
+          return emitOption(createOptions(selItem));
+        });
         return false;
       };
       if (selected.length) {

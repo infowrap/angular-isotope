@@ -14,11 +14,14 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
       $scope.$apply ->
         $scope.$emit onLayoutEvent
 
-
-
-  optionsStore.store onLayout: $scope.layoutEventEmit
   initEventHandler = (fun, evt, hnd) ->
     fun.call $scope, evt, hnd  if evt
+
+  getIsoOptions = () ->
+    isoOptions = $scope.isoOptions or optionsStore.retrieve()
+    # be sure to include the layout event
+    $.extend(isoOptions, {onLayout:$scope.layoutEventEmit})
+    return isoOptions
 
   $scope.init = (isoInit) ->
     isotopeContainer = isoInit.element
@@ -26,7 +29,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
     initEventHandler $scope.$on, isoInit.isoMethodEvent, methodHandler
     $scope.isoMode = isoInit.isoMode or "addItems"
     $timeout ->
-      isotopeContainer.isotope optionsStore.retrieve()
+      isotopeContainer.isotope(getIsoOptions())
       postInitialized = true
 
 
@@ -37,11 +40,14 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
 
 
   $scope.refreshIso = ->
-    isotopeContainer.isotope()  if postInitialized
+    isotopeContainer.isotope(getIsoOptions()) if postInitialized
 
   $scope.updateOptions = (option) ->
     if isotopeContainer
-      isotopeContainer.isotope option
+      # extend current options
+      isoOptions = getIsoOptions()
+      $.extend(isoOptions, option)
+      isotopeContainer.isotope(isoOptions)
     else
       optionsStore.store option
 
@@ -55,17 +61,13 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
     params = option.params
     fun.apply $scope, params
 
-
-  # Defaults
-  initEventHandler $scope.$on, "iso-opts", optionsHandler
-  initEventHandler $scope.$on, "iso-method", methodHandler
-
   # Not used here.
   $scope.removeAll = (cb) ->
     isotopeContainer.isotope "remove", isotopeContainer.data("isotope").$allAtoms, cb
 
-  $scope.refresh = ->
-    isotopeContainer.isotope()
+  $scope.$on '$destroy', ->
+    if isotopeContainer and postInitialized
+      isotopeContainer.destroy()
 
   $scope.$on config.refreshEvent, ->
     $scope.refreshIso()

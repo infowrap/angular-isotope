@@ -14,5 +14,10 @@
     "app-server.js",
     "Gruntfile.js",
     "karma.conf.js"
-  ]
+  ],
+  "devDependencies": {
+    "infowrap-angular": "git@github.com:infowrap/angular.js.git#0.2.3",
+    "infowrap-isotope": "git@github.com:infowrap/isotope.git#0.1.0",
+    "jquery": "~2.0.3"
+  }
 }

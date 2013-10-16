@@ -1,7 +1,7 @@
 angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("angularIsotopeController", [
   "iso.config", "$scope", "$timeout", "optionsStore", function(config, $scope, $timeout, optionsStore) {
     "use strict";
-    var buffer, initEventHandler, isoMode, isotopeContainer, methodHandler, onLayoutEvent, optionsHandler, postInitialized, scope;
+    var buffer, getIsoOptions, initEventHandler, isoMode, isotopeContainer, methodHandler, onLayoutEvent, optionsHandler, postInitialized, scope;
     onLayoutEvent = "isotope.onLayout";
     postInitialized = false;
     isotopeContainer = null;
@@ -16,13 +16,18 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
         });
       });
     };
-    optionsStore.store({
-      onLayout: $scope.layoutEventEmit
-    });
     initEventHandler = function(fun, evt, hnd) {
       if (evt) {
         return fun.call($scope, evt, hnd);
       }
+    };
+    getIsoOptions = function() {
+      var isoOptions;
+      isoOptions = $scope.isoOptions || optionsStore.retrieve();
+      $.extend(isoOptions, {
+        onLayout: $scope.layoutEventEmit
+      });
+      return isoOptions;
     };
     $scope.init = function(isoInit) {
       isotopeContainer = isoInit.element;
@@ -30,7 +35,7 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
       initEventHandler($scope.$on, isoInit.isoMethodEvent, methodHandler);
       $scope.isoMode = isoInit.isoMode || "addItems";
       return $timeout(function() {
-        isotopeContainer.isotope(optionsStore.retrieve());
+        isotopeContainer.isotope(getIsoOptions());
         return postInitialized = true;
       });
     };
@@ -43,12 +48,15 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
     };
     $scope.refreshIso = function() {
       if (postInitialized) {
-        return isotopeContainer.isotope();
+        return isotopeContainer.isotope(getIsoOptions());
       }
     };
     $scope.updateOptions = function(option) {
+      var isoOptions;
       if (isotopeContainer) {
-        return isotopeContainer.isotope(option);
+        isoOptions = getIsoOptions();
+        $.extend(isoOptions, option);
+        return isotopeContainer.isotope(isoOptions);
       } else {
         return optionsStore.store(option);
       }
@@ -62,14 +70,14 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
       params = option.params;
       return fun.apply($scope, params);
     };
-    initEventHandler($scope.$on, "iso-opts", optionsHandler);
-    initEventHandler($scope.$on, "iso-method", methodHandler);
     $scope.removeAll = function(cb) {
       return isotopeContainer.isotope("remove", isotopeContainer.data("isotope").$allAtoms, cb);
     };
-    $scope.refresh = function() {
-      return isotopeContainer.isotope();
-    };
+    $scope.$on('$destroy', function() {
+      if (isotopeContainer && postInitialized) {
+        return isotopeContainer.destroy();
+      }
+    });
     return $scope.$on(config.refreshEvent, function() {
       return $scope.refreshIso();
     });
