@@ -1,13 +1,12 @@
 angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("angularIsotopeController", [
   "iso.config", "$scope", "$timeout", "optionsStore", function(config, $scope, $timeout, optionsStore) {
     "use strict";
-    var buffer, getIsoOptions, initEventHandler, isoId, isoMode, isotopeContainer, methodHandler, onLayoutEvent, optionsHandler, postInitialized, scope;
+    var buffer, getIsoOptions, initEventHandler, isoMode, isotopeContainer, methodHandler, onLayoutEvent, optionsHandler, postInitialized, scope;
     onLayoutEvent = "isotope.onLayout";
     postInitialized = false;
     isotopeContainer = null;
     buffer = [];
     scope = "";
-    isoId = void 0;
     isoMode = "";
     $scope.$on(onLayoutEvent, function(event) {});
     $scope.layoutEventEmit = function($elems, instance) {
@@ -31,7 +30,6 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
       return isoOptions;
     };
     $scope.init = function(isoInit) {
-      isoId = isoInit.isoId;
       isotopeContainer = isoInit.element;
       initEventHandler($scope.$on, isoInit.isoOptionsEvent, optionsHandler);
       initEventHandler($scope.$on, isoInit.isoMethodEvent, methodHandler);
@@ -48,13 +46,9 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
         });
       }
     };
-    $scope.refreshIso = function(id) {
+    $scope.refreshIso = function() {
       if (postInitialized) {
-        if (id === void 0) {
-          return isotopeContainer.isotope(getIsoOptions());
-        } else if (isoId === id) {
-          return isotopeContainer.isotope(getIsoOptions());
-        }
+        return isotopeContainer.isotope('reloadItems').isotope(getIsoOptions());
       }
     };
     $scope.updateOptions = function(option) {
@@ -84,8 +78,8 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
         return isotopeContainer.isotope('destroy');
       }
     });
-    return $scope.$on(config.refreshEvent, function(e, id) {
-      return $scope.refreshIso(id);
+    return $scope.$on(config.refreshEvent, function() {
+      return $scope.refreshIso();
     });
   }
 ]).controller("isoSortByDataController", [
