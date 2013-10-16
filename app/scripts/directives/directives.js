@@ -15,7 +15,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
         if (isoOptions) {
           linkOptions = $parse(isoOptions)(scope);
           if (angular.isObject(linkOptions)) {
-            scope.updateOptions(linkOptions);
+            scope.isoOptions = linkOptions;
           }
         }
         isoInit["element"] = element;
@@ -36,7 +36,7 @@ angular.module("iso.directives").directive("isotopeContainer", [
       link: function(scope, element, attrs) {
         var $element, correctScope;
         $element = $(element);
-        correctScope = (_.has(scope, "$root") ? scope.$parent : scope);
+        correctScope = (scope.hasOwnProperty("$root") ? scope.$parent : scope);
         correctScope.setIsoElement($element);
         if (attrs.ngRepeat && true === correctScope.$last && "addItems" === correctScope.isoMode) {
           element.ready(function() {
@@ -58,14 +58,14 @@ angular.module("iso.directives").directive("isotopeContainer", [
       link: function(scope, element, attrs) {
         var methSet, methods, optEvent, optKey, optionSet, options;
         optionSet = $(element);
-        optKey = optionSet.attr("ok-key");
+        optKey = optionSet.attr("data-ok-key");
         optEvent = "iso-opts";
         options = {};
-        methSet = optionSet.children().find("[ok-sel]");
+        methSet = optionSet.children().find("[data-ok-sel]");
         methSet.each(function(index) {
           var $this;
           $this = $(this);
-          return $this.attr("ok-sortby-key", scope.getHash($this.attr("ok-sel")));
+          return $this.attr("data-ok-sortby-key", scope.getHash($this.attr("data-ok-sel")));
         });
         methods = scope.createSortByDataMethods(methSet);
         return scope.storeMethods(methods);
@@ -80,16 +80,16 @@ angular.module("iso.directives").directive("isotopeContainer", [
       var createOptions, doOption, emitOption, optKey, optPublish, optionSet, preSelectOptions, selected;
       optionSet = $(element);
       optPublish = attrs.optPublish || "opt-kind";
-      optKey = optionSet.attr("ok-key");
+      optKey = optionSet.attr("data-ok-key");
       selected = optionSet.find(".selected");
       preSelectOptions = {};
       createOptions = function(item) {
         var ascAttr, key, option, virtualSortByKey;
         if (item) {
           option = {};
-          virtualSortByKey = item.attr("ok-sortby-key");
-          ascAttr = item.attr("opt-ascending");
-          key = virtualSortByKey || item.attr("ok-sel");
+          virtualSortByKey = item.attr("data-ok-sortby-key");
+          ascAttr = item.attr("data-opt-ascending");
+          key = virtualSortByKey || item.attr("data-ok-sel");
           if (virtualSortByKey) {
             option["sortAscending"] = (ascAttr ? ascAttr === "true" : true);
           }
@@ -111,7 +111,9 @@ angular.module("iso.directives").directive("isotopeContainer", [
         }
         optionSet.find(".selected").removeClass("selected");
         selItem.addClass("selected");
-        emitOption(createOptions(selItem));
+        scope.$apply(function() {
+          return emitOption(createOptions(selItem));
+        });
         return false;
       };
       if (selected.length) {
