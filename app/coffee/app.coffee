@@ -3,6 +3,8 @@ isotopeApp.config(["$routeProvider", ($routeProvider) ->
   "use strict"
   $routeProvider.when("/",
     templateUrl: "views/main.html"
+  ).when("/test",
+    templateUrl: "views/test.html"
   ).otherwise redirectTo: "/"
 ]).run(["$rootScope", ($rootScope) ->
 

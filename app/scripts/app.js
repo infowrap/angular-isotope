@@ -7,6 +7,8 @@ isotopeApp.config([
     "use strict";
     return $routeProvider.when("/", {
       templateUrl: "views/main.html"
+    }).when("/test", {
+      templateUrl: "views/test.html"
     }).otherwise({
       redirectTo: "/"
     });
