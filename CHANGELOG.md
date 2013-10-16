@@ -1,3 +1,11 @@
+#  (2013-10-16)
+
+## Features
+
+- **options:** 
+  - iso-options are now handled per instance. needed where many isotopeContainers are used across many routes ([f9ae91d3](https://github.com/infowrap/angular-isotope/commit/f9ae91d3))   
+
+
 #  (2013-08-20)
 
 
