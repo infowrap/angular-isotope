@@ -1,5 +1,5 @@
 angular.module("iso.controllers", ["iso.config", "iso.services"])
-.controller("angularIsotopeController", ["iso.config", "$scope", "$timeout", "optionsStore", (config, $scope, $timeout, optionsStore) ->
+.controller("angularIsotopeController", ["iso.config", "$scope", "$rootScope", "$timeout", "optionsStore", (config, $scope, $rootScope, $timeout, optionsStore) ->
   "use strict"
   onLayoutEvent = "isotope.onLayout"
   postInitialized = false
@@ -69,8 +69,9 @@ angular.module("iso.controllers", ["iso.config", "iso.services"])
     if isotopeContainer and postInitialized
       isotopeContainer.isotope('destroy')
 
-  $scope.$on config.refreshEvent, ->
-    $scope.refreshIso()
+  if config.refreshEvent
+    $rootScope.$on config.refreshEvent, ->
+      $scope.refreshIso()
 
 ]).controller("isoSortByDataController", ["iso.config", "$scope", "optionsStore", (config, $scope, optionsStore) ->
   $scope.getHash = (s) ->

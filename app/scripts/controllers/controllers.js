@@ -1,5 +1,5 @@
 angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("angularIsotopeController", [
-  "iso.config", "$scope", "$timeout", "optionsStore", function(config, $scope, $timeout, optionsStore) {
+  "iso.config", "$scope", "$rootScope", "$timeout", "optionsStore", function(config, $scope, $rootScope, $timeout, optionsStore) {
     "use strict";
     var buffer, getIsoOptions, initEventHandler, isoMode, isotopeContainer, methodHandler, onLayoutEvent, optionsHandler, postInitialized, scope;
     onLayoutEvent = "isotope.onLayout";
@@ -78,9 +78,11 @@ angular.module("iso.controllers", ["iso.config", "iso.services"]).controller("an
         return isotopeContainer.isotope('destroy');
       }
     });
-    return $scope.$on(config.refreshEvent, function() {
-      return $scope.refreshIso();
-    });
+    if (config.refreshEvent) {
+      return $rootScope.$on(config.refreshEvent, function() {
+        return $scope.refreshIso();
+      });
+    }
   }
 ]).controller("isoSortByDataController", [
   "iso.config", "$scope", "optionsStore", function(config, $scope, optionsStore) {
